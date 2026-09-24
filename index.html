@@ -140,6 +140,28 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
 }
 .is-watched .card-poster{opacity:0.4;}
 
+/* DOOMSDAY COUNTDOWN */
+.poster-countdown{
+  position:absolute;left:0;right:0;bottom:0;
+  background:linear-gradient(0deg,rgba(0,0,0,0.88),rgba(0,0,0,0.35));
+  padding:4px 3px 3px;text-align:center;pointer-events:none;
+}
+.poster-countdown .pc-num{font-family:'Bebas Neue';font-size:12px;letter-spacing:1px;color:var(--gold);line-height:1.1}
+.poster-countdown .pc-lbl{font-size:6px;color:var(--sub);letter-spacing:1px;text-transform:uppercase;margin-top:1px}
+.modal-poster-hero .poster-countdown{padding:8px 6px 6px}
+.modal-poster-hero .poster-countdown .pc-num{font-size:20px}
+.modal-poster-hero .poster-countdown .pc-lbl{font-size:9px}
+
+/* POSTER DEBUG PANEL */
+.debug-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.debug-overlay.open{display:flex}
+.debug-box{background:var(--card2);border-radius:16px;padding:18px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid var(--border)}
+.debug-box h4{font-size:14px;letter-spacing:1px;margin-bottom:10px;color:#fff}
+.debug-row{font-size:12px;color:var(--sub);display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.debug-row b{color:var(--text)}
+.debug-errs{margin-top:10px;font-size:10px;color:#F0806A;line-height:1.5;word-break:break-word;max-height:160px;overflow-y:auto}
+.debug-close{margin-top:14px;width:100%;padding:9px;border-radius:10px;background:var(--gold);color:#000;border:none;font-weight:700;font-size:13px}
+
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .22s}
 .modal-overlay.open{opacity:1;pointer-events:all}
@@ -215,7 +237,7 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
 
   <div class="topbar">
     <div class="topbar-info">
-      <div class="topbar-title">MCU + X-MEN</div>
+      <div class="topbar-title" id="topbarTitle">MCU + X-MEN</div>
       <div class="topbar-sub">WATCHLIST</div>
     </div>
     <div class="progress-ring">
@@ -274,6 +296,20 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightboxImg" src="" alt=""/>
+</div>
+
+<!-- POSTER DEBUG PANEL (long-press the app title to open) -->
+<div class="debug-overlay" id="debugOverlay">
+  <div class="debug-box">
+    <h4>POSTER LOAD STATUS</h4>
+    <div class="debug-row"><span>Total posters</span><b id="dbgTotal">–</b></div>
+    <div class="debug-row"><span>From cache</span><b id="dbgCache">–</b></div>
+    <div class="debug-row"><span>Fetched OK (this run)</span><b id="dbgOk">–</b></div>
+    <div class="debug-row"><span>Failed</span><b id="dbgFail">–</b></div>
+    <div class="debug-row"><span>Online?</span><b id="dbgOnline">–</b></div>
+    <div id="dbgErrs" class="debug-errs"></div>
+    <button class="debug-close" onclick="document.getElementById('debugOverlay').classList.remove('open')">Close</button>
+  </div>
 </div>
 
 <script>
@@ -781,9 +817,46 @@ const TMDB_IDS = {
   "Avengers: Secret Wars-2027":               [1003598, "movie"],
 };
 
+// ── DOOMSDAY COUNTDOWN ──
+// Avengers: Doomsday release: Dec 18 2026, 10:30 IST (IST = UTC+5:30 → 05:00 UTC)
+const DOOMSDAY_TARGET = new Date("2026-12-18T05:00:00Z").getTime();
+const DOOMSDAY_ID = "Avengers: Doomsday-2026";
+
+function countdownParts() {
+  const diff = DOOMSDAY_TARGET - Date.now();
+  if (diff <= 0) return null;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  return { d, h, m, s };
+}
+
+function countdownHtml() {
+  const p = countdownParts();
+  if (!p) return `<div class="pc-num">IN THEATERS</div>`;
+  const big = p.d > 0 ? `${p.d}d ${p.h}h` : `${p.h}h ${p.m}m ${p.s}s`;
+  return `<div class="pc-num">${big}</div><div class="pc-lbl">until Doomsday</div>`;
+}
+
+function updateCountdowns() {
+  document.querySelectorAll(".poster-countdown").forEach(el => { el.innerHTML = countdownHtml(); });
+}
+setInterval(updateCountdowns, 1000);
+
 // Runtime poster cache
 let POSTERS = {};
 const POSTER_CACHE_KEY = "mcu-posters-tmdb-v5";
+
+// Diagnostics — lets you see WHY posters failed on a given device,
+// without needing a computer/devtools. Long-press the app title to view.
+const posterDiag = { total: Object.keys(TMDB_IDS).length, fromCache: 0, fetchedOk: 0, failed: 0, errors: [] };
+
+function fetchWithTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
+}
 
 function applyPoster(key, src) {
   POSTERS[key] = src;
@@ -806,35 +879,81 @@ async function fetchPosters() {
     const cached = JSON.parse(localStorage.getItem(POSTER_CACHE_KEY) || "{}");
     if (Object.keys(cached).length > 0) {
       POSTERS = cached;
+      posterDiag.fromCache = Object.keys(cached).length;
       renderList();
     }
   } catch(e) {}
 
   // 2. Only fetch what's missing
   const missing = Object.keys(TMDB_IDS).filter(k => !POSTERS[k]);
+  updateDebugPanel();
   if (!missing.length) return;
 
-  // 3. Fetch each missing poster from TMDB (parallel, 8 at a time)
-  const BATCH = 8;
+  // 3. Fetch each missing poster from TMDB (parallel, 6 at a time, 7s timeout each,
+  //    one retry on failure — covers slow/flaky mobile connections)
+  const BATCH = 6;
   for (let i = 0; i < missing.length; i += BATCH) {
     await Promise.all(
-      missing.slice(i, i + BATCH).map(async key => {
-        try {
-          const [id, type] = TMDB_IDS[key];
-          const url = `https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_KEY}&language=en-US`;
-          const res = await fetch(url);
-          if (!res.ok) return;
-          const data = await res.json();
-          const path = data.poster_path;
-          if (path) applyPoster(key, TMDB_IMG + path);
-        } catch(e) {}
-      })
+      missing.slice(i, i + BATCH).map(key => fetchOnePoster(key))
     );
+    updateDebugPanel();
   }
 
   // 4. Save updated cache
   try { localStorage.setItem(POSTER_CACHE_KEY, JSON.stringify(POSTERS)); } catch(e) {}
+  updateDebugPanel();
 }
+
+async function fetchOnePoster(key, attempt) {
+  attempt = attempt || 1;
+  const [id, type] = TMDB_IDS[key];
+  const url = `https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_KEY}&language=en-US`;
+  try {
+    const res = await fetchWithTimeout(url, 7000);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    const path = data.poster_path;
+    if (path) {
+      applyPoster(key, TMDB_IMG + path);
+      posterDiag.fetchedOk++;
+    } else {
+      throw new Error("No poster_path in response");
+    }
+  } catch(e) {
+    if (attempt < 2) return fetchOnePoster(key, attempt + 1);
+    posterDiag.failed++;
+    const reason = e.name === "AbortError" ? "timed out (>7s)" : e.message;
+    if (posterDiag.errors.length < 8) posterDiag.errors.push(key + ": " + reason);
+  }
+}
+
+function updateDebugPanel() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set("dbgTotal", posterDiag.total);
+  set("dbgCache", posterDiag.fromCache);
+  set("dbgOk", posterDiag.fetchedOk);
+  set("dbgFail", posterDiag.failed);
+  set("dbgOnline", navigator.onLine === false ? "No (device offline)" : "Yes");
+  const errEl = document.getElementById("dbgErrs");
+  if (errEl) {
+    errEl.innerHTML = posterDiag.errors.length
+      ? "<b>Sample failures:</b><br>" + posterDiag.errors.map(e => "• " + e).join("<br>")
+      : (posterDiag.failed ? "" : "No failures logged yet.");
+  }
+}
+
+// Long-press the topbar title to open the debug panel on-device
+(function(){
+  const titleEl = document.getElementById("topbarTitle");
+  if (!titleEl) return;
+  let pressTimer;
+  const open = () => { updateDebugPanel(); document.getElementById("debugOverlay").classList.add("open"); };
+  titleEl.addEventListener("touchstart", () => { pressTimer = setTimeout(open, 800); });
+  titleEl.addEventListener("touchend", () => clearTimeout(pressTimer));
+  titleEl.addEventListener("touchmove", () => clearTimeout(pressTimer));
+  titleEl.addEventListener("mousedown", () => { pressTimer = setTimeout(open, 800); });
+  titleEl.addEventListener("mouseup", () => clearTimeout(pressTimer));
+})();
 
 // ── STATS ──
 function updateStats() {
@@ -959,7 +1078,8 @@ function renderList() {
       const posterHtml = `<img src="${posterSrc}" alt="${m.title}" loading="lazy" `+
         `style="display:${posterSrc?'block':'none'}" `+
         `onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`+
-        `<div class="card-poster-fallback" style="display:${posterSrc?'none':'flex'};font-size:10px;color:var(--muted);text-align:center;padding:4px">${m.title.split(":")[0]}</div>`;
+        `<div class="card-poster-fallback" style="display:${posterSrc?'none':'flex'};font-size:10px;color:var(--muted);text-align:center;padding:4px">${m.title.split(":")[0]}</div>`+
+        (id === DOOMSDAY_ID ? `<div class="poster-countdown">${countdownHtml()}</div>` : "");
       card.innerHTML = `
         <div class="card-accent" style="background:${topBg}"></div>
         <div class="card-inner">
@@ -1030,6 +1150,7 @@ function openModal(id) {
   // For modal use w500 instead of w342 for higher quality
   const heroSrc = posterSrc.includes("tmdb.org") ? posterSrc.replace("/w342/","/w500/") : posterSrc;
   const heroEl = document.getElementById("modalPosterHero");
+  const modalCountdown = id === DOOMSDAY_ID ? `<div class="poster-countdown">${countdownHtml()}</div>` : "";
   if (heroSrc) {
     heroEl.style.display = "";
     heroEl.innerHTML = `
@@ -1037,7 +1158,12 @@ function openModal(id) {
         onerror="this.parentElement.style.display='none'"
         style="width:100%;max-height:340px;object-fit:cover;display:block;">
       <div class="modal-poster-gradient"></div>
-      <button class="modal-poster-zoom-btn" onclick="openLightbox('${heroSrc.includes('tmdb.org') ? heroSrc.replace('/w500/','/original/') : heroSrc}','${m.title.replace(/'/g,"\\'")}')">⛶</button>`;
+      <button class="modal-poster-zoom-btn" onclick="openLightbox('${heroSrc.includes('tmdb.org') ? heroSrc.replace('/w500/','/original/') : heroSrc}','${m.title.replace(/'/g,"\\'")}')">⛶</button>
+      ${modalCountdown}`;
+  } else if (id === DOOMSDAY_ID) {
+    // Show countdown even if the poster image itself failed to load
+    heroEl.style.display = "";
+    heroEl.innerHTML = `<div style="padding:26px 0;background:var(--card2)">${modalCountdown}</div>`;
   } else {
     heroEl.style.display = "none";
     heroEl.innerHTML = "";
