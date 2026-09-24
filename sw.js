@@ -1,5 +1,5 @@
 // MCU Watch — Service Worker v2
-const CACHE_NAME = "mcu-watch-v2";
+const CACHE_NAME = "mcu-watch-v2.5";
 const ASSETS = [
   "./",
   "./index.html",
