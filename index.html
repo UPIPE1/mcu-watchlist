@@ -728,6 +728,16 @@ const DATA = [
       {name:"The Thing",desc:"Ben Grimm — Reed's best friend, transformed into an orange rocky powerhouse."},
       {name:"Galactus",desc:"Ralph Ineson — world-devouring cosmic god. The most powerful villain the MCU has faced."},
       {name:"Silver Surfer",desc:"Julia Garner — Galactus's enigmatic herald, torn between duty and conscience."}]},
+    { title:"Spider-Man: Brand New Day", year:2026, priority:"essential", mins:130, note:"Four years after No Way Home. Peter is alone, forgotten by the world. A new threat forces him back.", chars:[
+      {name:"Spider-Man",desc:"Tom Holland — Peter Parker living completely alone, the world has forgotten he exists."},
+      {name:"MJ",desc:"Zendaya returns — though Peter erased himself from her memory."},
+      {name:"Daredevil",desc:"Charlie Cox — Matt Murdock, one of the few who helps Peter navigate his new life."},
+      {name:"New Villain",desc:"A powerful new threat emerges from the shadows of Peter's forgotten past."}]},
+    { title:"Avengers: Endgame Encore", year:2026, priority:"optional", mins:185, note:"Theatrical re-release of Endgame with ~4 minutes of new footage shot for Doomsday, a new intro from the Russos, and a post-credits scene bridging straight into Avengers: Doomsday.", chars:[
+      {name:"Iron Man",desc:"Robert Downey Jr. — the new cut adds footage tying his sacrifice directly into Doomsday's setup."},
+      {name:"Captain America",desc:"Chris Evans — present for the new bridging material alongside the rest of the original team."},
+      {name:"New Post-Credits Scene",desc:"A brand-new scene exclusive to Encore, setting up Avengers: Doomsday."},
+      {name:"Infinity Vision Debut",desc:"Marks the launch of Disney's new premium large-format certification."}]},
     { title:"Avengers: Doomsday", year:2026, priority:"essential", mins:150, note:"The Avengers, X-Men, Fantastic Four & Thunderbolts all unite to fight Doctor Doom.", chars:[
       {name:"Doctor Doom",desc:"Robert Downey Jr. returns — not as Tony Stark but as the MCU's new ultimate villain."},
       {name:"Captain America",desc:"Sam Wilson leads Earth's mightiest heroes into the biggest battle yet."},
@@ -735,11 +745,6 @@ const DATA = [
       {name:"Mr. Fantastic",desc:"Pedro Pascal — Reed Richards brings the Fantastic Four into the wider MCU."},
       {name:"Wolverine",desc:"Hugh Jackman's Wolverine now fully part of the MCU."},
       {name:"All MCU Heroes",desc:"Avengers, Wakandans, Fantastic Four, Thunderbolts & X-Men all assemble."}]},
-    { title:"Spider-Man: Brand New Day", year:2026, priority:"essential", mins:130, note:"Four years after No Way Home. Peter is alone, forgotten by the world. A new threat forces him back.", chars:[
-      {name:"Spider-Man",desc:"Tom Holland — Peter Parker living completely alone, the world has forgotten he exists."},
-      {name:"MJ",desc:"Zendaya returns — though Peter erased himself from her memory."},
-      {name:"Daredevil",desc:"Charlie Cox — Matt Murdock, one of the few who helps Peter navigate his new life."},
-      {name:"New Villain",desc:"A powerful new threat emerges from the shadows of Peter's forgotten past."}]},
     { title:"Avengers: Secret Wars", year:2027, priority:"essential", mins:180, note:"THE FINALE. The ultimate conclusion to the Multiverse Saga. All realities collide.", chars:[
       {name:"Doctor Doom",desc:"Robert Downey Jr. — now wielding god-like power over all realities."},
       {name:"All Surviving Heroes",desc:"Every hero from every universe unites for the final battle of the Multiverse Saga."},
@@ -835,8 +840,9 @@ const TMDB_IDS = {
   "Thunderbolts*-2025":                       [986056, "movie"],
   // ── MCU PHASE 6 ──
   "The Fantastic Four: First Steps-2025":     [617126,  "movie"],
-  "Avengers: Doomsday-2026":                  [1003596, "movie"],
   "Spider-Man: Brand New Day-2026":           [969681,  "movie"],
+  "Avengers: Endgame Encore-2026":            [299534,  "movie"], // TMDB doesn't have a separate Encore listing yet — reuses Endgame's ID/poster
+  "Avengers: Doomsday-2026":                  [1003596, "movie"],
   "Avengers: Secret Wars-2027":               [1003598, "movie"],
 };
 
