@@ -48,6 +48,82 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
   .ddcountdown-big{font-size:14px}
   .ddcountdown-small{font-size:12px}
 }
+
+/* ── ASK MCU ASSISTANT ── */
+.askmcu-btn{position:fixed;right:16px;bottom:calc(var(--safe-bot) + 18px);z-index:255;
+  width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--gold),#c98f1f);
+  box-shadow:0 4px 18px rgba(240,192,64,0.45),0 0 0 1px rgba(255,255,255,0.08) inset;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  transition:transform .15s;}
+.askmcu-btn:active{transform:scale(0.92)}
+.askmcu-btn .askmcu-dot{position:absolute;top:2px;right:2px;width:11px;height:11px;border-radius:50%;
+  background:#F0806A;border:2px solid var(--bg);display:none}
+.askmcu-btn.has-unread .askmcu-dot{display:block}
+
+.askmcu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:260;display:none}
+.askmcu-overlay.open{display:block}
+
+.askmcu-panel{position:fixed;left:0;right:0;bottom:0;z-index:261;
+  background:var(--card2);border-top:1px solid var(--border);
+  border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,0.5);
+  display:flex;flex-direction:column;height:min(82vh,640px);
+  transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);}
+.askmcu-panel.open{transform:translateY(0)}
+@media (min-width:720px){
+  .askmcu-panel{left:auto;right:20px;bottom:calc(var(--safe-bot) + 84px);
+    width:380px;height:560px;border-radius:18px;border:1px solid var(--border)}
+}
+
+.askmcu-head{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:14px 14px 12px;
+  border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(240,192,64,0.08),transparent)}
+.askmcu-head-icon{width:34px;height:34px;border-radius:10px;background:rgba(240,192,64,0.15);
+  display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.askmcu-head-text{flex:1;min-width:0}
+.askmcu-head-title{font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:#fff;line-height:1.1}
+.askmcu-head-sub{font-size:10px;color:var(--muted);letter-spacing:0.3px;margin-top:2px}
+.askmcu-head-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;
+  color:var(--sub);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.askmcu-head-btn:active{background:rgba(255,255,255,0.06)}
+
+.askmcu-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;
+  -webkit-overflow-scrolling:touch}
+
+.askmcu-empty{text-align:center;padding:10px 6px 4px;color:var(--sub);font-size:12.5px;line-height:1.5}
+.askmcu-empty b{color:var(--gold);display:block;font-family:'Bebas Neue';font-size:15px;letter-spacing:0.5px;margin-bottom:4px}
+.askmcu-suggestions{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.askmcu-chip{text-align:left;padding:9px 12px;border-radius:12px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-size:12.5px;cursor:pointer;line-height:1.3}
+.askmcu-chip:active{background:rgba(240,192,64,0.1);border-color:rgba(240,192,64,0.3)}
+
+.askmcu-msg{max-width:86%;padding:10px 12px;border-radius:14px;font-size:13px;line-height:1.5;
+  word-wrap:break-word;white-space:pre-wrap}
+.askmcu-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(240,192,64,0.22),rgba(240,192,64,0.12));
+  border:1px solid rgba(240,192,64,0.3);border-bottom-right-radius:4px;color:#fff}
+.askmcu-msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--border);
+  border-bottom-left-radius:4px;color:var(--text)}
+.askmcu-msg.bot a,.askmcu-msg.bot .askmcu-link{color:var(--gold);cursor:pointer;text-decoration:underline;font-weight:600}
+.askmcu-msg ul{margin:4px 0 2px 16px;padding:0}
+.askmcu-msg li{margin:2px 0}
+
+.askmcu-typing{align-self:flex-start;display:flex;gap:4px;padding:11px 14px;border-radius:14px;
+  background:var(--card);border:1px solid var(--border);border-bottom-left-radius:4px}
+.askmcu-typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);
+  animation:askmcu-bounce 1.1s infinite ease-in-out}
+.askmcu-typing span:nth-child(2){animation-delay:.15s}
+.askmcu-typing span:nth-child(3){animation-delay:.3s}
+@keyframes askmcu-bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+
+.askmcu-inputrow{flex-shrink:0;display:flex;gap:8px;padding:10px 12px calc(var(--safe-bot) + 10px);
+  border-top:1px solid var(--border);background:var(--card2)}
+.askmcu-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:10px 16px;color:var(--text);font-size:13.5px;font-family:inherit;outline:none;min-width:0}
+.askmcu-input:focus{border-color:rgba(240,192,64,0.4)}
+.askmcu-send{width:40px;height:40px;border-radius:50%;border:none;background:var(--gold);color:#000;
+  font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.askmcu-send:disabled{opacity:.4}
+.askmcu-body::-webkit-scrollbar{width:4px}
+.askmcu-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 .progress-ring{position:relative;width:44px;height:44px;flex-shrink:0}
 .progress-ring svg{transform:rotate(-90deg)}
 .ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -214,7 +290,15 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
 /* MODAL BODY */
 .modal-body{padding:14px 18px 0}
 .modal-title{font-family:'Bebas Neue';font-size:28px;letter-spacing:2px;margin-bottom:4px}
-.modal-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.modal-note{font-size:12.5px;color:var(--sub);line-height:1.55;margin-bottom:14px}
+.modal-details{display:flex;flex-direction:column;gap:7px;padding:12px;margin-bottom:16px;
+  background:var(--card);border:1px solid var(--border);border-radius:12px}
+.modal-detail-row{display:flex;gap:8px;font-size:12px;line-height:1.5}
+.modal-detail-label{color:var(--muted);min-width:72px;flex-shrink:0;font-weight:600;letter-spacing:.3px;text-transform:uppercase;font-size:10px;padding-top:1px}
+.modal-detail-val{color:var(--text);flex:1}
+.modal-cast-chip{display:inline-block;background:rgba(255,255,255,0.06);border:1px solid var(--border);
+  border-radius:20px;padding:3px 10px;font-size:11px;margin:2px 4px 2px 0;color:var(--text)}
 .modal-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .modal-row:last-child{border-bottom:none}
 .modal-name{font-size:13px;font-weight:700;min-width:104px;flex-shrink:0;margin-top:1px}
@@ -309,6 +393,8 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
     <div class="modal-body">
       <div class="modal-title" id="modalTitle"></div>
       <div class="modal-sub" id="modalSub"></div>
+      <div class="modal-note" id="modalNote"></div>
+      <div class="modal-details" id="modalDetails"></div>
       <div id="modalChars"></div>
       <button class="modal-close" onclick="closeModalDirect()">Close</button>
     </div>
@@ -332,6 +418,28 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
     <div class="debug-row"><span>Online?</span><b id="dbgOnline">–</b></div>
     <div id="dbgErrs" class="debug-errs"></div>
     <button class="debug-close" onclick="document.getElementById('debugOverlay').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<!-- ASK MCU — offline rule-based assistant -->
+<button class="askmcu-btn" id="askmcuBtn" aria-label="Ask MCU assistant">
+  🤖<span class="askmcu-dot"></span>
+</button>
+<div class="askmcu-overlay" id="askmcuOverlay"></div>
+<div class="askmcu-panel" id="askmcuPanel">
+  <div class="askmcu-head">
+    <div class="askmcu-head-icon">🤖</div>
+    <div class="askmcu-head-text">
+      <div class="askmcu-head-title">ASK MCU</div>
+      <div class="askmcu-head-sub">Offline · rule-based · searches your local data</div>
+    </div>
+    <button class="askmcu-head-btn" id="askmcuClearBtn" title="Clear chat">🗑</button>
+    <button class="askmcu-head-btn" id="askmcuCloseBtn" title="Close">✕</button>
+  </div>
+  <div class="askmcu-body" id="askmcuBody"></div>
+  <div class="askmcu-inputrow">
+    <input class="askmcu-input" id="askmcuInput" type="text" placeholder="Ask about any movie, phase, or character…" autocomplete="off">
+    <button class="askmcu-send" id="askmcuSend">➤</button>
   </div>
 </div>
 
@@ -754,12 +862,100 @@ const DATA = [
   ]}
 ];
 
+// ── EXTRA DETAILS (release date, main cast, director) ──
+// Keyed by "title-year" (same id format used everywhere else — watched Set,
+// TMDB_IDS, openModal). Merged into each DATA movie object below so the
+// modal and the assistant can both read m.release / m.cast / m.director
+// directly, same as any other field.
+const MOVIE_DETAILS = {
+  "X-Men-2000": { release:"July 14, 2000", director:"Bryan Singer", cast:["Hugh Jackman","Patrick Stewart","Ian McKellen","Halle Berry","Famke Janssen"] },
+  "X2: X-Men United-2003": { release:"May 2, 2003", director:"Bryan Singer", cast:["Hugh Jackman","Patrick Stewart","Ian McKellen","Halle Berry","Famke Janssen"] },
+  "X-Men: The Last Stand-2006": { release:"May 26, 2006", director:"Brett Ratner", cast:["Hugh Jackman","Halle Berry","Ian McKellen","Patrick Stewart","Famke Janssen"] },
+  "X-Men Origins: Wolverine-2009": { release:"May 1, 2009", director:"Gavin Hood", cast:["Hugh Jackman","Liev Schreiber","Ryan Reynolds","Danny Huston"] },
+  "X-Men: First Class-2011": { release:"June 3, 2011", director:"Matthew Vaughn", cast:["James McAvoy","Michael Fassbender","Jennifer Lawrence","Kevin Bacon","Rose Byrne"] },
+  "The Wolverine-2013": { release:"July 26, 2013", director:"James Mangold", cast:["Hugh Jackman","Tao Okamoto","Rila Fukushima"] },
+  "X-Men: Days of Future Past-2014": { release:"May 23, 2014", director:"Bryan Singer", cast:["Hugh Jackman","James McAvoy","Michael Fassbender","Jennifer Lawrence","Patrick Stewart","Ian McKellen"] },
+  "X-Men: Apocalypse-2016": { release:"May 27, 2016", director:"Bryan Singer", cast:["James McAvoy","Michael Fassbender","Jennifer Lawrence","Oscar Isaac","Sophie Turner"] },
+  "Deadpool-2016": { release:"February 12, 2016", director:"Tim Miller", cast:["Ryan Reynolds","Morena Baccarin","Ed Skrein","T.J. Miller"] },
+  "Logan-2017": { release:"March 3, 2017", director:"James Mangold", cast:["Hugh Jackman","Patrick Stewart","Dafne Keen","Boyd Holbrook"] },
+  "Deadpool 2-2018": { release:"May 18, 2018", director:"David Leitch", cast:["Ryan Reynolds","Josh Brolin","Morena Baccarin","Zazie Beetz"] },
+  "Dark Phoenix-2019": { release:"June 7, 2019", director:"Simon Kinberg", cast:["Sophie Turner","James McAvoy","Michael Fassbender","Jennifer Lawrence"] },
+  "The New Mutants-2020": { release:"August 28, 2020", director:"Josh Boone", cast:["Maisie Williams","Anya Taylor-Joy","Charlie Heaton","Henry Zaga"] },
+
+  "Iron Man-2008": { release:"May 2, 2008", director:"Jon Favreau", cast:["Robert Downey Jr.","Gwyneth Paltrow","Terrence Howard","Jeff Bridges"] },
+  "The Incredible Hulk-2008": { release:"June 13, 2008", director:"Louis Leterrier", cast:["Edward Norton","Liv Tyler","Tim Roth","William Hurt"] },
+  "Iron Man 2-2010": { release:"May 7, 2010", director:"Jon Favreau", cast:["Robert Downey Jr.","Gwyneth Paltrow","Don Cheadle","Scarlett Johansson","Mickey Rourke"] },
+  "Thor-2011": { release:"May 6, 2011", director:"Kenneth Branagh", cast:["Chris Hemsworth","Natalie Portman","Tom Hiddleston","Anthony Hopkins"] },
+  "Captain America: The First Avenger-2011": { release:"July 22, 2011", director:"Joe Johnston", cast:["Chris Evans","Hayley Atwell","Sebastian Stan","Tommy Lee Jones"] },
+  "The Avengers-2012": { release:"May 4, 2012", director:"Joss Whedon", cast:["Robert Downey Jr.","Chris Evans","Chris Hemsworth","Scarlett Johansson","Mark Ruffalo","Jeremy Renner"] },
+  "Iron Man 3-2013": { release:"May 3, 2013", director:"Shane Black", cast:["Robert Downey Jr.","Gwyneth Paltrow","Don Cheadle","Guy Pearce","Ben Kingsley"] },
+  "Thor: The Dark World-2013": { release:"November 8, 2013", director:"Alan Taylor", cast:["Chris Hemsworth","Natalie Portman","Tom Hiddleston","Anthony Hopkins"] },
+  "Captain America: The Winter Soldier-2014": { release:"April 4, 2014", director:"Anthony & Joe Russo", cast:["Chris Evans","Scarlett Johansson","Sebastian Stan","Samuel L. Jackson"] },
+  "Guardians of the Galaxy-2014": { release:"August 1, 2014", director:"James Gunn", cast:["Chris Pratt","Zoe Saldana","Dave Bautista","Vin Diesel","Bradley Cooper"] },
+  "Avengers: Age of Ultron-2015": { release:"May 1, 2015", director:"Joss Whedon", cast:["Robert Downey Jr.","Chris Evans","Chris Hemsworth","Scarlett Johansson","Mark Ruffalo","James Spader"] },
+  "Ant-Man-2015": { release:"July 17, 2015", director:"Peyton Reed", cast:["Paul Rudd","Evangeline Lilly","Michael Douglas","Corey Stoll"] },
+  "Captain America: Civil War-2016": { release:"May 6, 2016", director:"Anthony & Joe Russo", cast:["Chris Evans","Robert Downey Jr.","Scarlett Johansson","Sebastian Stan","Chadwick Boseman","Tom Holland"] },
+  "Doctor Strange-2016": { release:"November 4, 2016", director:"Scott Derrickson", cast:["Benedict Cumberbatch","Chiwetel Ejiofor","Rachel McAdams","Tilda Swinton"] },
+  "Guardians of the Galaxy Vol. 2-2017": { release:"May 5, 2017", director:"James Gunn", cast:["Chris Pratt","Zoe Saldana","Dave Bautista","Karen Gillan"] },
+  "Spider-Man: Homecoming-2017": { release:"July 7, 2017", director:"Jon Watts", cast:["Tom Holland","Michael Keaton","Robert Downey Jr.","Zendaya"] },
+  "Thor: Ragnarok-2017": { release:"November 3, 2017", director:"Taika Waititi", cast:["Chris Hemsworth","Tom Hiddleston","Cate Blanchett","Mark Ruffalo"] },
+  "Black Panther-2018": { release:"February 16, 2018", director:"Ryan Coogler", cast:["Chadwick Boseman","Michael B. Jordan","Lupita Nyong'o","Danai Gurira"] },
+  "Avengers: Infinity War-2018": { release:"April 27, 2018", director:"Anthony & Joe Russo", cast:["Robert Downey Jr.","Chris Hemsworth","Chris Evans","Josh Brolin","Scarlett Johansson"] },
+  "Ant-Man and the Wasp-2018": { release:"July 6, 2018", director:"Peyton Reed", cast:["Paul Rudd","Evangeline Lilly","Michael Douglas","Michelle Pfeiffer"] },
+  "Captain Marvel-2019": { release:"March 8, 2019", director:"Anna Boden & Ryan Fleck", cast:["Brie Larson","Samuel L. Jackson","Ben Mendelsohn","Jude Law"] },
+  "Avengers: Endgame-2019": { release:"April 26, 2019", director:"Anthony & Joe Russo", cast:["Robert Downey Jr.","Chris Evans","Mark Ruffalo","Chris Hemsworth","Scarlett Johansson"] },
+  "Spider-Man: Far From Home-2019": { release:"July 2, 2019", director:"Jon Watts", cast:["Tom Holland","Samuel L. Jackson","Jake Gyllenhaal","Zendaya"] },
+  "WandaVision (Series)-2021": { release:"January 15, 2021", director:"Matt Shakman", cast:["Elizabeth Olsen","Paul Bettany","Kathryn Hahn"] },
+  "Falcon & Winter Soldier (Series)-2021": { release:"March 19, 2021", director:"Kari Skogland", cast:["Anthony Mackie","Sebastian Stan","Daniel Brühl"] },
+  "Loki Season 1 (Series)-2021": { release:"June 9, 2021", director:"Kate Herron", cast:["Tom Hiddleston","Owen Wilson","Sophia Di Martino"] },
+  "Black Widow-2021": { release:"July 9, 2021", director:"Cate Shortland", cast:["Scarlett Johansson","Florence Pugh","David Harbour","Rachel Weisz"] },
+  "Shang-Chi-2021": { release:"September 3, 2021", director:"Destin Daniel Cretton", cast:["Simu Liu","Awkwafina","Tony Leung","Michelle Yeoh"] },
+  "What If...? (Series)-2021": { release:"August 11, 2021", director:"Bryan Andrews", cast:["Jeffrey Wright (The Watcher)","various MCU cast reprising their roles"] },
+  "Eternals-2021": { release:"November 5, 2021", director:"Chloé Zhao", cast:["Gemma Chan","Richard Madden","Angelina Jolie","Salma Hayek"] },
+  "Hawkeye (Series)-2021": { release:"November 24, 2021", director:"Rhys Thomas", cast:["Jeremy Renner","Hailee Steinfeld","Florence Pugh"] },
+  "Spider-Man: No Way Home-2021": { release:"December 17, 2021", director:"Jon Watts", cast:["Tom Holland","Zendaya","Benedict Cumberbatch","Willem Dafoe","Alfred Molina"] },
+  "Doctor Strange: Multiverse of Madness-2022": { release:"May 6, 2022", director:"Sam Raimi", cast:["Benedict Cumberbatch","Elizabeth Olsen","Xochitl Gomez","Benedict Wong"] },
+  "Moon Knight (Series)-2022": { release:"March 30, 2022", director:"Mohamed Diab", cast:["Oscar Isaac","May Calamawy","Ethan Hawke"] },
+  "Thor: Love and Thunder-2022": { release:"July 8, 2022", director:"Taika Waititi", cast:["Chris Hemsworth","Natalie Portman","Christian Bale","Tessa Thompson"] },
+  "She-Hulk (Series)-2022": { release:"August 18, 2022", director:"Kat Coiro", cast:["Tatiana Maslany","Mark Ruffalo","Tim Roth"] },
+  "Ms. Marvel (Series)-2022": { release:"June 8, 2022", director:"Adil El Arbi & Bilall Fallah", cast:["Iman Vellani","Matt Lintz","Yasmeen Fletcher"] },
+  "Black Panther: Wakanda Forever-2022": { release:"November 11, 2022", director:"Ryan Coogler", cast:["Letitia Wright","Lupita Nyong'o","Danai Gurira","Tenoch Huerta"] },
+  "Ant-Man and the Wasp: Quantumania-2023": { release:"February 17, 2023", director:"Peyton Reed", cast:["Paul Rudd","Evangeline Lilly","Jonathan Majors","Michelle Pfeiffer"] },
+  "Guardians of the Galaxy Vol. 3-2023": { release:"May 5, 2023", director:"James Gunn", cast:["Chris Pratt","Zoe Saldana","Dave Bautista","Karen Gillan"] },
+  "Secret Invasion (Series)-2023": { release:"June 21, 2023", director:"Ali Selim", cast:["Samuel L. Jackson","Ben Mendelsohn","Olivia Colman","Kingsley Ben-Adir"] },
+  "Loki Season 2 (Series)-2023": { release:"October 6, 2023", director:"Justin Benson & Aaron Moorhead", cast:["Tom Hiddleston","Owen Wilson","Sophia Di Martino"] },
+  "The Marvels-2023": { release:"November 10, 2023", director:"Nia DaCosta", cast:["Brie Larson","Teyonah Parris","Iman Vellani"] },
+  "Echo (Series)-2024": { release:"January 9, 2024", director:"Sydney Freeland", cast:["Alaqua Cox","Charlie Cox","Vincent D'Onofrio"] },
+  "Deadpool & Wolverine-2024": { release:"July 26, 2024", director:"Shawn Levy", cast:["Ryan Reynolds","Hugh Jackman","Emma Corrin","Matthew Macfadyen"] },
+  "Captain America: Brave New World-2025": { release:"February 14, 2025", director:"Julius Onah", cast:["Anthony Mackie","Harrison Ford","Danny Ramirez","Carl Lumbly"] },
+  "Thunderbolts*-2025": { release:"May 2, 2025", director:"Jake Schreier", cast:["Florence Pugh","Sebastian Stan","David Harbour","Wyatt Russell","Julia Louis-Dreyfus"] },
+  "The Fantastic Four: First Steps-2025": { release:"July 25, 2025", director:"Matt Shakman", cast:["Pedro Pascal","Vanessa Kirby","Joseph Quinn","Ebon Moss-Bachrach"] },
+  "Spider-Man: Brand New Day-2026": { release:"July 31, 2026", director:"Destin Daniel Cretton", cast:["Tom Holland","Zendaya","Jacob Batalon","Mark Ruffalo","Jon Bernthal","Sadie Sink"] },
+  "Avengers: Endgame Encore-2026": { release:"September 25, 2026", director:"Anthony & Joe Russo", cast:["Robert Downey Jr.","Chris Evans","Mark Ruffalo","Chris Hemsworth","Scarlett Johansson"] },
+  "Avengers: Doomsday-2026": { release:"December 18, 2026", director:"Anthony & Joe Russo", cast:["Robert Downey Jr.","Chris Hemsworth","Anthony Mackie","Vanessa Kirby","Chris Evans"] },
+  "Avengers: Secret Wars-2027": { release:"December 17, 2027", director:"Anthony & Joe Russo", cast:["Full cast not yet officially announced"] }
+};
+DATA.forEach(section => section.movies.forEach(m => {
+  const extra = MOVIE_DETAILS[m.title + "-" + m.year];
+  if (extra) Object.assign(m, extra);
+}));
+
 // ── STATE ──
 const LS = "mcu-v3";
-let watched = new Set(JSON.parse(localStorage.getItem(LS) || "[]"));
+// Some sandboxed preview environments (many "online HTML compiler" sites
+// run the result in an iframe with no allow-same-origin) throw a
+// SecurityError the instant localStorage is touched at all — not just on
+// read, but even checking typeof it can throw. Guard every access so the
+// app still runs (just without persistence) instead of the whole script
+// dying on this one line.
+function safeGetItem(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+function safeSetItem(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch (e) {} }
+
+let watched = new Set(JSON.parse(safeGetItem(LS) || "[]"));
 let activeFilter = "all";
 let searchQuery = "";
-function save() { localStorage.setItem(LS, JSON.stringify([...watched])); }
+function save() { safeSetItem(LS, JSON.stringify([...watched])); }
 
 const allMovies = [];
 DATA.forEach(s => s.movies.forEach(m => allMovies.push({...m, fox:s.fox})));
@@ -948,11 +1144,11 @@ function applyTopWidgetPoster(src) {
 
 async function fetchPosters() {
   // 0. Clear old broken cache keys from previous versions
-  ["mcu-posters-v1","mcu-posters-v2","mcu-posters-tmdb-v1"].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  ["mcu-posters-v1","mcu-posters-v2","mcu-posters-tmdb-v1"].forEach(k => safeRemoveItem(k));
 
   // 1. Load cache instantly so returning visitors see posters right away
   try {
-    const cached = JSON.parse(localStorage.getItem(POSTER_CACHE_KEY) || "{}");
+    const cached = JSON.parse(safeGetItem(POSTER_CACHE_KEY) || "{}");
     if (Object.keys(cached).length > 0) {
       POSTERS = cached;
       posterDiag.fromCache = Object.keys(cached).length;
@@ -985,7 +1181,7 @@ async function fetchPosters() {
   }
 
   // 4. Save updated cache
-  try { localStorage.setItem(POSTER_CACHE_KEY, JSON.stringify(POSTERS)); } catch(e) {}
+  safeSetItem(POSTER_CACHE_KEY, JSON.stringify(POSTERS));
   updateDebugPanel();
 }
 
@@ -1258,6 +1454,19 @@ function openModal(id) {
   t.textContent=m.title; t.style.background=grad;
   t.style.webkitBackgroundClip="text"; t.style.webkitTextFillColor="transparent";
   document.getElementById("modalSub").textContent = m.year+" · "+m.chars.length+" characters · "+Math.floor(m.mins/60)+"h"+(m.mins%60?m.mins%60+"m":"");
+  document.getElementById("modalNote").textContent = m.note || "";
+  const detailsEl = document.getElementById("modalDetails");
+  if (m.release || m.cast || m.director) {
+    let rows = "";
+    if (m.release) rows += `<div class="modal-detail-row"><div class="modal-detail-label">Released</div><div class="modal-detail-val">${m.release}</div></div>`;
+    if (m.director) rows += `<div class="modal-detail-row"><div class="modal-detail-label">Director</div><div class="modal-detail-val">${m.director}</div></div>`;
+    if (m.priority) rows += `<div class="modal-detail-row"><div class="modal-detail-label">Priority</div><div class="modal-detail-val">${m.priority==="essential"?"⭐ Essential":"Optional"}</div></div>`;
+    if (m.cast && m.cast.length) rows += `<div class="modal-detail-row"><div class="modal-detail-label">Main cast</div><div class="modal-detail-val">${m.cast.map(a=>`<span class="modal-cast-chip">${a}</span>`).join("")}</div></div>`;
+    detailsEl.innerHTML = rows;
+    detailsEl.style.display = rows ? "" : "none";
+  } else {
+    detailsEl.innerHTML = ""; detailsEl.style.display = "none";
+  }
   document.getElementById("modalChars").innerHTML = m.chars.map(c=>
     `<div class="modal-row"><div class="modal-name" style="color:${accent}">${c.name}</div><div class="modal-desc">${c.desc}</div></div>`
   ).join("");
@@ -1319,5 +1528,6 @@ buildFilters();
 renderList();
 fetchPosters(); // fetch TMDB posters in background using your API key, updates cards live
 </script>
+<script src="assistant.js"></script>
 </body>
 </html>
