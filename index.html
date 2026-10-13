@@ -68,8 +68,10 @@ body{font-family:'Outfit',sans-serif;color:var(--text);overscroll-behavior:none}
   background:var(--card2);border-top:1px solid var(--border);
   border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,0.5);
   display:flex;flex-direction:column;height:min(82vh,640px);
-  transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);}
-.askmcu-panel.open{transform:translateY(0)}
+  transform:translateY(100%);visibility:hidden;pointer-events:none;
+  transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s linear .28s;}
+.askmcu-panel.open{transform:translateY(0);visibility:visible;pointer-events:auto;
+  transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s linear 0s;}
 @media (min-width:720px){
   .askmcu-panel{left:auto;right:20px;bottom:calc(var(--safe-bot) + 84px);
     width:380px;height:560px;border-radius:18px;border:1px solid var(--border)}
@@ -1364,7 +1366,4 @@ function renderList() {
       card.innerHTML = `
         <div class="card-accent" style="background:${topBg}"></div>
         <div class="card-inner">
-          <div class="card-poster" data-poster="${posterSrc.includes('tmdb.org') ? posterSrc.replace('/w342/','/w500/') : posterSrc}" data-title="${m.title.replace(/"/g,'&quot;')}" style="cursor:${posterSrc?'pointer':'default'}">${posterHtml}</div>
-          <div class="card-content">
-            <div class="card-badges">
-              <span class="badge ${fox?"badge-fox":"badge-mcu"}">${fox?"FOX":"MCU
+          <div class="card-poster" data-poster="${posterSrc.includes('tmdb.org') ? posterSrc.replace('/w342/','/w500/') : posterSrc}" data-title="${m.title.replace(/"/g,'&quot;')}" style="cursor:${posterSrc?'pointer':'d
