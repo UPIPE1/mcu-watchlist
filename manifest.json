@@ -4,8 +4,8 @@
   "description": "MCU + X-Men complete watchlist tracker",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#08090F",
-  "theme_color": "#08090F",
+  "background_color": "#07060B",
+  "theme_color": "#07060B",
   "orientation": "portrait",
   "icons": [
     {
